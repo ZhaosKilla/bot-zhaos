@@ -3,66 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Bot</title>
-    <!-- Librería oficial de Telegram para Mini Apps -->
+    <title>Panel Ghostkilla - Herramientas</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             background-color: #0e1621;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 20px;
+            padding: 15px;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-size: 20px;
+            text-align: center;
+            color: #5288c1;
         }
-        .menu-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .section {
+            background: #17212b;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
             width: 100%;
             max-width: 350px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .section h3 {
+            font-size: 14px;
+            margin: 0 0 8px 0;
+            color: #879ea6;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #2b3847;
+            border-radius: 8px;
+            background: #242f3d;
+            color: white;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #5288c1;
         }
         .btn {
-            padding: 14px;
-            font-size: 16px;
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
             font-weight: 600;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .btn-blue { background-color: #2481cc; }
         .btn-green { background-color: #26a541; }
-        .btn-red { background-color: #c73e3a; }
+        .btn-purple { background-color: #8338ec; }
+        .btn-red { background-color: #c73e3a; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <h2>⚡ Panel de Control ⚡</h2>
+    <h2>⚡ Panel Ghostkilla ⚡</h2>
 
-    <div class="menu-container">
-        <button class="btn btn-blue" onclick="alert('Hiciste clic en Gates')">📂 Gates Disponibles</button>
-        <button class="btn btn-green" onclick="alert('Sección de comandos')">💻 Comandos del Bot</button>
-        <!-- Este botón cierra la ventana automáticamente en Telegram -->
-        <button class="btn btn-red" onclick="Telegram.WebApp.close()">❌ Cerrar</button>
+    <!-- Consulta de BIN -->
+    <div class="section">
+        <h3>🔍 Consultar BIN</h3>
+        <input type="text" id="binInput" placeholder="Ej: 526259">
+        <button class="btn btn-blue" onclick="ejecutarComando('/bin ', 'binInput')">Buscar BIN</button>
     </div>
 
+    <!-- Generador de Tarjetas -->
+    <div class="section">
+        <h3>⚡ Generador (Gen)</h3>
+        <input type="text" id="genInput" placeholder="Patrón ej: 416916xxxx|12|2030|777">
+        <button class="btn btn-purple" onclick="ejecutarComando('/gen ', 'genInput')">Generar</button>
+    </div>
+
+    <!-- Consulta de IP -->
+    <div class="section">
+        <h3>🌍 Consultar IP</h3>
+        <input type="text" id="ipInput" placeholder="Ej: 8.8.8.8">
+        <button class="btn btn-green" onclick="ejecutarComando('/ip ', 'ipInput')">Buscar IP</button>
+    </div>
+
+    <!-- Comandos rápidos sin inputs -->
+    <div class="section" style="display: flex; gap: 8px;">
+        <button class="btn btn-blue" onclick="enviarDirecto('/faker')">👤 Faker</button>
+    </div>
+
+    <button class="btn btn-red" onclick="Telegram.WebApp.close()">❌ Cerrar Menú</button>
+
     <script>
-        // Inicializar la Mini App de Telegram
         Telegram.WebApp.ready();
-        Telegram.WebApp.expand(); // Extender la ventana al máximo
+        Telegram.WebApp.expand();
+
+        function ejecutarComando(comandoBase, inputId) {
+            const valor = document.getElementById(inputId).value.trim();
+            if (!valor) {
+                alert("Por favor completa el campo.");
+                return;
+            }
+            const mensajeFinal = comandoBase + valor;
+            enviarAlBot(mensajeFinal);
+        }
+
+        function enviarDirecto(comando) {
+            enviarAlBot(comando);
+        }
+
+        function enviarAlBot(texto) {
+            if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+                Telegram.WebApp.sendData(texto);
+            } else {
+                alert("Simulación de envío al bot: " + texto);
+            }
+            Telegram.WebApp.close();
+        }
     </script>
 </body>
 </html>
