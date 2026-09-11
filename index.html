@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Ghostkilla - Herramientas</title>
+    <title>Panel Ghostkilla</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -47,10 +47,6 @@
             box-sizing: border-box;
             margin-bottom: 8px;
         }
-        input:focus {
-            outline: none;
-            border-color: #5288c1;
-        }
         .btn {
             width: 100%;
             padding: 10px;
@@ -60,7 +56,6 @@
             border-radius: 8px;
             cursor: pointer;
             color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .btn-blue { background-color: #2481cc; }
         .btn-green { background-color: #26a541; }
@@ -72,59 +67,54 @@
 
     <h2>⚡ Panel Ghostkilla ⚡</h2>
 
-    <!-- Consulta de BIN -->
     <div class="section">
         <h3>🔍 Consultar BIN</h3>
         <input type="text" id="binInput" placeholder="Ej: 526259">
-        <button class="btn btn-blue" onclick="ejecutarComando('/bin ', 'binInput')">Buscar BIN</button>
+        <button class="btn btn-blue" onclick="ejecutar('/bin ', document.getElementById('binInput').value)">Buscar BIN</button>
     </div>
 
-    <!-- Generador de Tarjetas -->
     <div class="section">
         <h3>⚡ Generador (Gen)</h3>
-        <input type="text" id="genInput" placeholder="Patrón ej: 416916xxxx|12|2030|777">
-        <button class="btn btn-purple" onclick="ejecutarComando('/gen ', 'genInput')">Generar</button>
+        <input type="text" id="genInput" placeholder="Ej: 416916xxxx|12|2030|777">
+        <button class="btn btn-purple" onclick="ejecutar('/gen ', document.getElementById('genInput').value)">Generar</button>
     </div>
 
-    <!-- Consulta de IP -->
     <div class="section">
         <h3>🌍 Consultar IP</h3>
         <input type="text" id="ipInput" placeholder="Ej: 8.8.8.8">
-        <button class="btn btn-green" onclick="ejecutarComando('/ip ', 'ipInput')">Buscar IP</button>
+        <button class="btn btn-green" onclick="ejecutar('/ip ', document.getElementById('ipInput').value)">Buscar IP</button>
     </div>
 
-    <!-- Comandos rápidos sin inputs -->
-    <div class="section" style="display: flex; gap: 8px;">
-        <button class="btn btn-blue" onclick="enviarDirecto('/faker')">👤 Faker</button>
+    <div class="section">
+        <button class="btn btn-blue" onclick="enviarDirecto('/faker')">👤 Generar Faker</button>
     </div>
 
     <button class="btn btn-red" onclick="Telegram.WebApp.close()">❌ Cerrar Menú</button>
 
     <script>
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
+        let tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-        function ejecutarComando(comandoBase, inputId) {
-            const valor = document.getElementById(inputId).value.trim();
-            if (!valor) {
-                alert("Por favor completa el campo.");
+        function ejecutar(cmd, val) {
+            val = val.trim();
+            if (!val) {
+                alert("Escribe un valor primero.");
                 return;
             }
-            const mensajeFinal = comandoBase + valor;
-            enviarAlBot(mensajeFinal);
+            enviar(cmd + val);
         }
 
-        function enviarDirecto(comando) {
-            enviarAlBot(comando);
+        function enviarDirecto(cmd) {
+            enviar(cmd);
         }
 
-        function enviarAlBot(texto) {
-            if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-                Telegram.WebApp.sendData(texto);
-            } else {
-                alert("Simulación de envío al bot: " + texto);
+        function enviar(texto) {
+            try {
+                tg.sendData(texto);
+            } catch (e) {
+                alert("Error al enviar: " + e.message);
             }
-            Telegram.WebApp.close();
         }
     </script>
 </body>
