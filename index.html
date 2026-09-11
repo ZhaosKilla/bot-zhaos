@@ -102,16 +102,17 @@
                 alert("Escribe un valor primero.");
                 return;
             }
-            enviarAlBot(cmd + val);
+            mandarAlChat(cmd + val);
         }
 
         function enviarDirecto(cmd) {
-            enviarAlBot(cmd);
+            mandarAlChat(cmd);
         }
 
-        function enviarAlBot(texto) {
-            tg.sendData(texto);
+        function mandarAlChat(texto) {
+            // Abre un enlace interno de Telegram que escribe el comando directamente en la barra de mensajes del chat
             tg.close();
+            window.location.href = "https://t.me/share/url?url=" + encodeURIComponent(texto);
         }
     </script>
 </body>
